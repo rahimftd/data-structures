@@ -4,22 +4,23 @@ var Queue = function() {
   var someQueue = Object.create(queueMethods);
   someQueue.storage = {};
   someQueue.items = 0;
+  someQueue.nextIndex = 0;
+  someQueue.firstIndex = 0;
 
   return someQueue;
 };
 
 var queueMethods = {
   enqueue: function(value) {
-    this.storage[this.items] = value;
+    this.storage[this.nextIndex] = value;
+    this.nextIndex++;
     this.items++;
   },
   dequeue: function() {
-    var first = this.storage[0];
+    var first = this.storage[this.firstIndex];
     this.items && this.items--;
-    for (var i = 0; i < Object.keys(this.storage).length; i++) {
-      this.storage[i] = this.storage[i + 1];
-    }
-    delete this.storage[this.items];
+    delete this.storage[this.firstIndex];
+    this.firstIndex++;
     return first;
   },
   size: function() {
