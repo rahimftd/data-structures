@@ -5,13 +5,13 @@ var Queue = function() {
   var storage = {};
   var items = 0;
   var firstIndex = 0;
-  var lastIndex = 0;
+  var nextIndex = 0;
 
   // Implement the methods below
 
   someInstance.enqueue = function(value) {
-    storage[lastIndex] = value;
-    lastIndex++;
+    storage[nextIndex] = value;
+    nextIndex++;
     items++;
   };
 

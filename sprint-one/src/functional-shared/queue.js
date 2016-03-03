@@ -4,6 +4,8 @@ var Queue = function() {
   var someObj = {};
   someObj.storage = {};
   someObj.items = 0;
+  someObj.firstIndex = 0;
+  someObj.nextIndex = 0;
 
   extend(someObj, queueMethods);
 
@@ -12,17 +14,15 @@ var Queue = function() {
 
 var queueMethods = {
   enqueue: function(value) {
-    this.storage[this.items] = value;
+    this.storage[this.nextIndex] = value;
+    this.nextIndex++;
     this.items++;
   }, 
   dequeue: function() {
-    var first = this.storage[0];
+    var first = this.storage[this.firstIndex];
 
-    // shift everything over
-    for (var i = 0; i < Object.keys(this.storage).length; i++) {
-      this.storage[i] = this.storage[i + 1];
-    }
-    delete this.storage[this.items - 1];
+    delete this.storage[this.firstIndex];
+    this.firstIndex++;
     this.items = Math.max(0, --this.items);
 
     return first;
