@@ -3,20 +3,21 @@ var Queue = function() {
   // but try not not reference your old code in writing the new style.
   this.storage = {};
   this.items = 0;
+  this.nextIndex = 0;
+  this.firstIndex = 0;
 };
 
 Queue.prototype.enqueue = function(value) {
-  this.storage[this.items] = value;
+  this.storage[this.nextIndex] = value;
+  this.nextIndex++;
   this.items++;
 };
 
 Queue.prototype.dequeue = function() {
-  var first = this.storage[0];
+  var first = this.storage[this.firstIndex];
+  delete this.storage[this.firstIndex];
   this.items && this.items--;
-  for (var i = 0; i < Object.keys(this.storage).length; i++) {
-    this.storage[i] = this.storage[i + 1];
-  }
-  delete this.storage[this.items];
+  this.firstIndex++;
   return first;
 };
 
