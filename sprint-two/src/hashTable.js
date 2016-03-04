@@ -57,7 +57,7 @@ HashTable.prototype.retrieve = function(k) {
   var entries = this._storage.get(index);
   
   // Checks if entries is an array
-  if (Array.isArray(entries)) {
+  if (entries) {
     // Iterate through the entries array
     for (var i = 0; i < entries.length; i++) {
       // Check if the key at index i is equal to the user provided key
@@ -67,7 +67,6 @@ HashTable.prototype.retrieve = function(k) {
         return entries[i][1];
       }
     }
-  // Checks if entries exists
   }
 };
 // Function that HashTable instances delegate to. Removes a value at an index calculated from the given key
