@@ -3,17 +3,18 @@
 var HashTable = function() {
   // Limit denotes the maximum size of the table
   this._limit = 8;
+  this._size = 0;
   // Instantiate a 'Limited Array' that will store hash table data
   this._storage = LimitedArray(this._limit);
 };
 // Insert method that HashTable instances will delegate to
-HashTable.prototype.insert = function(k, v) {
+HashTable.prototype.insert = function(k, v, needsRehash) {
   // Creating an index based on a hash function
   var index = getIndexBelowMaxForKey(k, this._limit);
   // Initializing a pair object that stores the key and 
   // value that is provided
   var pair = [k, v];
-  
+  needsRehash = needsRehash || false;
   // Checks whether the hash table has a value at the index.
   // If there is already a value, that means there is a 'collision'
   if (this._storage.get(index) !== undefined) {
@@ -42,11 +43,14 @@ HashTable.prototype.insert = function(k, v) {
         
       }
     }
-    this._storage.set(index, hashArray);  
-    
+    this._storage.set(index, hashArray);    
   } else { // If there is no collision it will simply store the pair
     this._storage.set(index, [pair]);
     
+  }
+  if (!needsRehash) {
+    this._size++;
+    this.reHash(this.checkIfNeedsResizing());
   }
 };
 // Function that HashTable instances delegate to. Returns a value based on a provided[0]
@@ -84,6 +88,42 @@ HashTable.prototype.remove = function(k) {
         delete entries[i];
       }
     }
+  }
+  this._size--;
+  this.reHash(this.checkIfNeedsResizing());
+};
+
+HashTable.prototype.checkIfNeedsResizing = function() {
+  if (this._size > (0.75 * this._limit)) {
+    return 1;
+  } else if (this._size < (0.25 * this._limit)) {
+    return -1;
+  } else {
+    return 0;
+  }
+};
+
+HashTable.prototype.reHash = function(doubleOrHalf) {
+  if (doubleOrHalf > 0) {
+    this._limit *= 2;
+  } else if (doubleOrHalf < 0) {
+    this._limit /= 2;
+  }
+  if (doubleOrHalf) {
+    var oldStorage = this._storage;
+    var that = this;
+    // this._size = 0;
+    this._storage = LimitedArray(this._limit);
+    oldStorage.each(function(bucket) {
+      if (bucket) {
+        for (var i = 0; i < bucket.length; i++) {
+          if (bucket[i]) {
+            that.insert(bucket[i][0], bucket[i][1], true);
+          }
+        } 
+      }
+    });
+    delete oldStorage;
   }
 };
 
