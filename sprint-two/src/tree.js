@@ -40,6 +40,15 @@ treeMethods.removeFromParent = function() {
   return this;
 };
 
+treeMethods.traverse = function(cb) {
+  cb(this);
+  if (this.children.length) {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].traverse(cb);
+    }
+  }
+};
+
 var extend = function(destination, obj) {
   for (var key in obj) {
     destination[key] = obj[key];
