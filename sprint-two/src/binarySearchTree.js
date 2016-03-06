@@ -46,6 +46,23 @@ BinarySearchTree.prototype.depthFirstLog = function(cb) {
   }
 };
 
+BinarySearchTree.prototype.breadthFirstLog = function(cb) {
+  var trees = Array.prototype.slice.call(arguments, 1);
+  var recursionArgs = [cb];
+  for (var i = 0; i < trees.length; i++) {
+    cb(trees[i].value);
+    if (trees[i].left) {
+      recursionArgs.push(trees[i].left);
+    } 
+    if (trees[i].right) {
+      recursionArgs.push(trees[i].right);
+    }
+  }
+  if (recursionArgs.length > 1) {
+    this.breadthFirstLog.apply(this, recursionArgs);
+  }
+};
+
 
 /*
  * Complexity: What is the time complexity of the above functions?
